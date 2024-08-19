@@ -1,5 +1,5 @@
 package domain.producto.tipos.limpieza;
 
-public enum TipoDeAplicacion {
+public enum TipoAplicacion {
     COCINA, BANIO, ROPA, MULTIUSO
 }
