@@ -1,10 +1,10 @@
 package domain.tienda;
 
+import com.sun.source.tree.WhileLoopTree;
 import domain.producto.Producto;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /*
     * Una de las cosas que mas me costo decidir (al no tener o tal vez no entender el contexto del tp o sus requerimientos)
@@ -24,6 +24,8 @@ import java.util.Map;
     * cual hubiera sido la collection correcta para el desarrollo de esta narrativa. Desde ya muchas gracias.
  */
 public class Tienda {
+    private static final int CANTIDAD_MAXIMA_PRODUCTOs_X_VENTA = 3;
+    private static final int CANTIDAD_MAXIMA_UNIDADES_X_PRODUCTO = 12;
     private String nombre;
     private int maximoProductoStock;
     private BigDecimal saldoCaja;
@@ -94,7 +96,7 @@ public class Tienda {
     }
 
     private void actualizarSaldoEnCaja(BigDecimal importeTotal){
-        this.saldoCaja = this.saldoCaja.subtract(importeTotal);
+        this.saldoCaja = importeTotal;
     }
 
     public BigDecimal obtenerSaldoEnCaja(){
@@ -107,6 +109,63 @@ public class Tienda {
 
     public String mostrarNombreTienda(){
         return this.nombre;
+    }
+
+    //Venta de productos
+    public void ventaDeProductos(){
+        Scanner scanner = new Scanner(System.in);
+        int cantidadProductos = 0;
+        int cantidad;
+        List<Producto> productosAVender = new ArrayList<>(); //List donde se guardan los productos que se compran y aquellos que por uno u otro motivo no pudieron comprarse y hay que mostrarlo como no validos
+
+        System.out.println("Bienvenido a la tienda " + this.mostrarNombreTienda() + " (0- Para Finaliza ingreso)");
+
+        System.out.println("Ingrese el código de producto: ");
+        String codigoProducto = scanner.nextLine();
+
+        while((codigoProducto.compareTo("0") != 0) && (cantidadProductos <= CANTIDAD_MAXIMA_PRODUCTOs_X_VENTA)){
+            if(this.esProductoDeLaTienda(codigoProducto)){
+                Producto producto = this.productos.get(codigoProducto);
+
+                if (producto.isDisponibleParaVenta()){
+                    cantidadProductos++;
+                    System.out.println("Ingrese la cantidad de unidades (0 - cancelar producto): ");
+                    cantidad = scanner.nextInt();
+
+                    while(cantidad > 12){
+                        System.out.println("No puede comprar mas de 12 unidades.");
+                        System.out.println("Ingrese la cantidad de unidades (0 - cancelar producto): ");
+                        cantidad = scanner.nextInt();
+                    }
+
+                    if(cantidad != 0){
+
+                    }
+                    else{
+                        cantidad--;
+                        System.out.println("Producto cancelado.");
+                        System.out.println("Ingrese el código de producto (0-Para salir): ");
+                        codigoProducto = scanner.nextLine();
+                    }
+
+                } else {
+                    System.out.println("El producto ingresado no se encuentra disponibe para la venta.");
+                    System.out.println("Si no desea ingresar otro código de producto presione 0(cero).");
+                    //productosAVender.add();
+                }
+
+            }else{
+                System.out.println("El código ingresado no pertenece a un producto de la tienda. Ingrese un código válido.");
+                System.out.println("Si no desea ingresar otro código de producto presione 0(cero).");
+                codigoProducto = scanner.nextLine();
+            }
+
+        }
+
+    }
+
+    public boolean esProductoDeLaTienda(String codigoProducto){
+        return this.productos.get(codigoProducto) != null;
     }
 
 }

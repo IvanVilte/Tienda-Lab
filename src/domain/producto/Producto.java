@@ -17,7 +17,7 @@ public abstract class Producto {
     protected BigDecimal porcentajeGanancia; // Ganancia en porcentaje.
     protected boolean disponibleParaVenta;
 
-    public Producto (String id, String descripcion, int cantidadStock, BigDecimal precioUnidad, BigDecimal porcentajeGanancia){
+    public Producto (String id, String descripcion, int cantidadStock, BigDecimal precioUnidad, BigDecimal porcentajeGanancia) {
         if (!validarId(id)){
             throw new IdentificadorInvalidoException("Identificador inválido: " + id);
         }
@@ -29,17 +29,7 @@ public abstract class Producto {
         this.disponibleParaVenta = true;
     }
 
-    private boolean validarId(String id){
-        if(id.startsWith("AB")){
-            return IDENTIFICADOR_ENVASADO_PATTERN.matcher(id).matches();
-        } else if(id.startsWith("AC")){
-            return IDENTIFICADOR_BEBIDA_PATTERN.matcher(id).matches();
-        } else if(id.startsWith("AZ")){
-            return IDENTIFICADOR_LIMPIEZA_PATTERN.matcher(id).matches();
-        } else {
-            return false;
-        }
-    }
+    protected abstract boolean validarId(String id);
 
     public void cambiarDisponibilidadParaVenta(boolean disponibleParaVenta){
         this.disponibleParaVenta = disponibleParaVenta;
@@ -73,5 +63,9 @@ public abstract class Producto {
 
     public void aumentarStock(int cantidadAgregar){
         this.cantidadStock += cantidadAgregar;
+    }
+
+    public boolean isDisponibleParaVenta(){
+        return this.disponibleParaVenta;
     }
 }
